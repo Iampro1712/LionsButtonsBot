@@ -1,8 +1,8 @@
 from pyrogram import Client
-
-API_ID = 18693077
-API_HASH = "c6c4c78e3590bd62551a2e3c51ff7040"
-BOT_TOKEN = "7393139589:AAEv425ZanxymdghmLbEgT-ldgTSb8nmirw"
+#Poner sus credenciales, las api puedes obtenerla desde my.telegram.org
+API_ID = API ID 
+API_HASH = "API HASH"
+BOT_TOKEN = "BOT TOKEN"
 prefixs = ['/', '!', '.']
 path_db = "db/info.db"
 path_db_ky = "db/info_ky.db"
