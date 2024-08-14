@@ -9,6 +9,10 @@ from  pyrogram.errors import *
 
 @app.on_message(filters.command('add', prefixes=prefixs))
 async def add_ch(client, message):
+    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+        await message.reply("No tienes permiso para enviar mensajes.")
+        return
+    
     TEXT = message.text.split()
     # Verificamos si se han proporcionado suficientes argumentos
     if len(TEXT) < 2:

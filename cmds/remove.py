@@ -7,6 +7,10 @@ from config import app
 
 @app.on_message(filters.command('remove', prefixes=prefixs))
 async def rmv(client, message):
+    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+        await message.reply("No tienes permiso para enviar mensajes.")
+        return
+
     TEXT = message.text.split()
     if len(TEXT) < 2:
         await message.reply_text("Debes ingresar el ID del canal que deseas eliminar.")

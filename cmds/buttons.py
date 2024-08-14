@@ -9,6 +9,10 @@ text_cp = None
 
 @app.on_message(filters.command("edit_photo", prefixes=prefixs))
 async def edit_photo(client, message):
+    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+        await message.reply("No tienes permiso para enviar mensajes.")
+        return
+    
     global photo_url
 
     phoyo = get_photo_and_text()
@@ -32,6 +36,10 @@ async def edit_photo(client, message):
 
 @app.on_message(filters.command("edit_cp", prefixes=prefixs))
 async def edit_caption(client, message):
+    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+        await message.reply("No tienes permiso para enviar mensajes.")
+        return
+    
     global text_cp
     create_table_ky()
     # conn = connect_db2()
