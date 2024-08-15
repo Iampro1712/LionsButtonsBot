@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, MessageEntity
 from pyrogram.errors import ChatWriteForbidden
 from config import app, prefixs
 from functions.func import connect_db, connect_db2, create_table_ky
@@ -36,33 +36,25 @@ async def edit_photo(client, message):
 
 @app.on_message(filters.command("edit_cp", prefixes=prefixs))
 async def edit_caption(client, message):
-    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
-        await message.reply("No tienes permiso para enviar mensajes.")
-        return
-    
-    global text_cp
-    create_table_ky()
-    # conn = connect_db2()
-    # cursor = conn.cursor()
-    # cursor.execute("INSERT INTO ConfigBotonera (img_link, caption) VALUES (?, ?);", ("https://i.pinimg.com/736x/63/ed/d4/63edd4caed6570008370c4a7385a4515.jpg", "Caption default, Favor cambiarla."))
-    # conn.commit()
-    # conn.close()
-    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+    if message.from_user.id not in [6706374638, 6364510923]:
         await message.reply("No tienes permiso para editar el caption.")
         return
-    TEXT = message.text.split()
-    caption = " ".join(TEXT[1:]).split(",")
-    if len(caption) < 1:
-        await message.reply_text("Debes ingresar los datos correctamente.")
-        return
+
+    global text_cp
+    create_table_ky()
     
-    text_cp = caption[0].strip()
+    # Captura todo el mensaje, excluyendo el comando
+    text_cp = message.text.split(None, 1)[1]  # Captura todo el texto después del comando
+
     cp_past = get_cp()
     cp_past1 = cp_past[0]
-    await message.reply_text(f"""Caption pasado: `{cp_past1}`""")
-    print(f"Caption: {text_cp}")
+
+    await message.reply_text(f"Caption anterior: {cp_past1}")
+    await message.reply_text(f"Nuevo caption: {text_cp}")
+    
     update_caption(text_cp)
     await message.reply_text("Caption editado con éxito.")
+
 
 def update_photo(new_photo):
     try:
@@ -123,11 +115,13 @@ async def send_links_with_captions(client, chat_id, message):
     rows = get_links_and_captions_from_db()
     rows2 = get_photo_and_text()
     buttons = []
-    
 
     for row2 in rows2:
         photo_url = row2[0]
         text_cp = row2[1]
+
+    permanent_button = InlineKeyboardButton("🔗 AÑADE TU CANAL AQUI", url="https://t.me/LionsButtonsBot")
+    buttons.append([permanent_button])
 
     for row in rows:
         caption = row[0]
@@ -154,3 +148,12 @@ async def send_links_with_captions(client, chat_id, message):
 # Función manejadora del comando
 def handle_links(client, message):
     send_links_with_captions(client, message.chat.id)
+
+@app.on_message(filters.command("prev-see", prefixes=prefixs))
+async def previsualizacion(client, message):
+    if message.from_user.id != 6706374638 and message.from_user.id != 6364510923:
+        await message.reply("No tienes permiso para enviar mensajes.")
+        return
+    await send_links_with_captions(client, message.chat.id, message)
+    await message.reply_text("Aqui esta la botonera bb, disfrutala 💕🥵.")
+    return
